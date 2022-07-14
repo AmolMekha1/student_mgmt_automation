@@ -1,11 +1,15 @@
+package TestCases;
+
 import static io.restassured.RestAssured.*;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import jdk.nashorn.api.scripting.JSObject;
+import jdk.nashorn.internal.AssertsEnabled;
 import jdk.nashorn.internal.parser.JSONParser;
 import org.json.simple.JSONObject;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 
@@ -15,7 +19,7 @@ import org.testng.annotations.Test;
 public class Test_01_AddStudent {
 
     @Test
-    public void AddStudent() {
+    public void addStudent() {
         JSONObject addStudent = new JSONObject();
         addStudent.put("firstName", "Am2");
         addStudent.put("id",10 );
@@ -29,12 +33,33 @@ public class Test_01_AddStudent {
     }
 
     @Test
-    public void FetchStudent(){
+    public void fetchStudent(){
         JSONObject student = new JSONObject();
         student.put("id",10);
       Response response =  given().body(student.toJSONString()).get("http://localhost:9080/studentmgmt/fetchStudents");
-        System.out.println();
-        System.out.println(response.toString());
+        Assert.assertEquals(response.getStatusCode(),200);
+    }
+
+    @Test
+    public void deleteStudent() {
+        JSONObject student = new JSONObject();
+        student.put("id", 10);
+        Response response = given().body(student.toJSONString()).get("http://localhost:9080/studentmgmt/fetchStudents");
+        Assert.assertEquals(response.getStatusCode(),200);
+    }
+
+    public void updateStudent(){
+        JSONObject student = new JSONObject();
+        student.put("firstName", "Am2");
+        student.put("id",10 );
+        student.put("lastName", "Me2");
+        student.put("nationality", "US");
+        student.put("studentClass", "five");
+
+        Response response = given().body(student.toJSONString()).get("http://localhost:9080/studentmgmt/updateStudent");
+        Assert.assertEquals(response.statusCode(),200);
+
+
     }
 }
 
